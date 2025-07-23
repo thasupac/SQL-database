@@ -1,0 +1,23 @@
+// UPDATE
+public async Task UpdateUserAsync(int id, string username, string email)
+{
+    string sql = "UPDATE usernameEmp SET username = @username, email = @email WHERE ID = @id";
+    using (SqlCommand cmd = new SqlCommand(sql, _conn))
+    {
+        cmd.Parameters.AddWithValue("@id", id);
+        cmd.Parameters.AddWithValue("@username", username);
+        cmd.Parameters.AddWithValue("@email", email);
+        await cmd.ExecuteNonQueryAsync();
+    }
+}
+
+// DELETE
+public async Task DeleteUserAsync(int id)
+{
+    string sql = "DELETE FROM usernameEmp WHERE ID = @id";
+    using (SqlCommand cmd = new SqlCommand(sql, _conn))
+    {
+        cmd.Parameters.AddWithValue("@id", id);
+        await cmd.ExecuteNonQueryAsync();
+    }
+}
