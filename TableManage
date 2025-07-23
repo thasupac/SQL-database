@@ -1,0 +1,43 @@
+using Microsoft.Data.SqlClient;
+using System.Collections.Generic;
+using System.Threading.Tasks;
+
+public class UserRepository
+{
+    private readonly SqlConnection _conn;
+
+    public UserRepository(SqlConnection conn)
+    {
+        _conn = conn;
+    }
+
+    public async Task InsertUserAsync(string username, string email)
+    {
+        string sql = "INSERT INTO usernameEmp (username, email) VALUES (@username, @email)";
+        using (SqlCommand cmd = new SqlCommand(sql, _conn))
+        {
+            cmd.Parameters.AddWithValue("@username", username);
+            cmd.Parameters.AddWithValue("@email", email);
+            await cmd.ExecuteNonQueryAsync();
+        }
+    }
+
+    public async Task<List<(int ID, string Username, string Email)>> GetAllUsersAsync()
+    {
+        var users = new List<(int, string, string)>();
+        string sql = "SELECT ID, username, email FROM usernameEmp";
+
+        using (SqlCommand cmd = new SqlCommand(sql, _conn))
+        using (SqlDataReader reader = await cmd.ExecuteReaderAsync())
+        {
+            while (await reader.ReadAsync())
+            {
+                users.Add((reader.GetInt32(0), reader.GetString(1), reader.GetString(2)));
+            }
+        }
+
+        return users;
+    }
+
+    // Add: UpdateUserAsync, DeleteUserAsync เหมือนเดิม
+}
