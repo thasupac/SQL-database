@@ -1,0 +1,15 @@
+private async void Window_Loaded(object sender, RoutedEventArgs e)
+{
+    using (var db = new DatabaseManager()) // เปิด connection ครั้งเดียว
+    {
+        var userRepo = new UserRepository(db.Connection);
+
+        await userRepo.InsertUserAsync("john.doe", "john@example.com");
+
+        var users = await userRepo.GetAllUsersAsync();
+        foreach (var user in users)
+        {
+            Console.WriteLine($"{user.ID} - {user.Username} - {user.Email}");
+        }
+    } // 🔁 ปิด connection อัตโนมัติที่นี่
+}
