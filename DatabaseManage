@@ -1,0 +1,23 @@
+using Microsoft.Data.SqlClient;
+using System;
+using System.Configuration;
+
+public class DatabaseManager : IDisposable
+{
+    public SqlConnection Connection { get; private set; }
+
+    public DatabaseManager()
+    {
+        string connStr = ConfigurationManager.ConnectionStrings["MyDbConnection"].ConnectionString;
+        Connection = new SqlConnection(connStr);
+        Connection.Open(); // ✅ เปิดแค่ครั้งเดียว
+    }
+
+    public void Dispose()
+    {
+        if (Connection?.State == System.Data.ConnectionState.Open)
+        {
+            Connection.Close();
+        }
+    }
+}
